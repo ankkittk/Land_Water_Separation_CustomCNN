@@ -21,10 +21,10 @@ def segment_image(image, model, patch_size=16):
 
             feature_maps = model.forward(patch)
 
-            mean_val, var_val = compute_stats(feature_maps)
-            print(mean_val, var_val)
+            mean_val, var_val, all_means = compute_stats(feature_maps)
+            #print(mean_val, var_val, all_means)
 
-            label = classify(mean_val, var_val)
+            label = classify(mean_val, var_val, all_means)
 
             if label == "Water":
                 mask[i:i+patch_size, j:j+patch_size] = 255

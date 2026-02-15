@@ -19,4 +19,4 @@ def compute_stats(feature_maps):
     overall_mean = np.mean(means)
     overall_variance = np.mean(variances)
 
-    return overall_mean, overall_variance
+    return overall_mean, overall_variance, np.median(means)
