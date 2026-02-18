@@ -16,27 +16,27 @@ def extract_boundary(original_bgr, mask):
         cv2.CHAIN_APPROX_SIMPLE
     )
 
-    output = cv2.cvtColor(original_bgr, cv2.COLOR_GRAY2BGR)
-    output = cv2.drawContours(output, contours, -1, (0, 0, 255), 2)
+    # Draw on original color image
+    output = original_bgr.copy()
+    cv2.drawContours(output, contours, -1, (0, 0, 255), 2)
 
     return output
 
 
 def run_pipeline(image_path):
 
-    # Load original color image (for boundary drawing)
     original_bgr = cv2.imread(image_path)
 
-    # Preprocess using utils
     gray = preprocess_pipeline(image_path)
 
-    # Model
+    h, w = gray.shape
+
+    original_resized = cv2.resize(original_bgr, (w, h))
+
     model = CustomCNN()
 
-    # Segmentation
     mask = segment_image(gray, model)
 
-    # Boundary overlay
-    result = extract_boundary(gray, mask)
+    result = extract_boundary(original_resized, mask)
 
-    return result
+    return original_resized, result

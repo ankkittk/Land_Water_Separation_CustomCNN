@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Land–Water Segmentation</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 40px;
+        }
+        img {
+            margin: 20px;
+            max-width: 400px;
+            border: 1px solid #ccc;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Land–Water Boundary Detection</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="file" name="image" required>
+    <input type="submit" value="Run Model">
+</form>
+
+{% if result %}
+<div class="container">
+    <div>
+        <h3>Original</h3>
+        <img src="{{ url_for('static', filename='uploads/' + original) }}">
+    </div>
+
+    <div>
+        <h3>Boundary Result</h3>
+        <img src="{{ url_for('static', filename='results/' + result) }}">
+    </div>
+</div>
+{% endif %}
+
+</body>
+</html>
