@@ -1,45 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Land–Water Segmentation</title>
-    <style>
-        body {
-            font-family: Arial;
-            text-align: center;
-            margin-top: 40px;
-        }
-        img {
-            margin: 20px;
-            max-width: 400px;
-            border: 1px solid #ccc;
-        }
-        .container {
-            display: flex;
-            justify-content: center;
-        }
-    </style>
+    <title>Land–Water Boundary Detection</title>
 </head>
-<body>
+<body style="text-align:center; font-family:Arial;">
 
-<h2>Land–Water Boundary Detection</h2>
+<h1>Land–Water Boundary Detection</h1>
 
+<!-- Upload Form -->
 <form method="POST" enctype="multipart/form-data">
-    <input type="file" name="image" required>
-    <input type="submit" value="Run Model">
+    <input type="file" name="image">
+    <button type="submit" name="action" value="upload">Upload</button>
 </form>
 
-{% if result %}
-<div class="container">
-    <div>
-        <h3>Original</h3>
-        <img src="{{ url_for('static', filename='uploads/' + original) }}">
-    </div>
+{% if original %}
+    <h2>Original</h2>
+    <img src="{{ url_for('static', filename='uploads/' + original) }}" width="256">
 
-    <div>
-        <h3>Boundary Result</h3>
-        <img src="{{ url_for('static', filename='results/' + result) }}">
-    </div>
-</div>
+    <!-- Run Model Button -->
+    <form method="POST">
+        <input type="hidden" name="filename" value="{{ original }}">
+        <button type="submit" name="action" value="run">Run Model</button>
+    </form>
+{% endif %}
+
+{% if result %}
+    <h2>Boundary Result</h2>
+    <img src="{{ url_for('static', filename='results/' + result) }}" width="256">
 {% endif %}
 
 </body>
