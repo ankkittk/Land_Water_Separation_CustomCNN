@@ -12,35 +12,52 @@ RESULT_FOLDER = os.path.join(BASE_DIR, "static/results")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(RESULT_FOLDER, exist_ok=True)
 
+
 @app.route("/", methods=["GET", "POST"])
 def index():
 
     if request.method == "POST":
 
-        file = request.files["image"]
+        action = request.form.get("action")
 
-        if file.filename == "":
-            return render_template("index.html")
+        # Upload image only
+        if action == "upload":
 
-        upload_path = os.path.join(UPLOAD_FOLDER, file.filename)
-        file.save(upload_path)
+            file = request.files["image"]
 
-        # Run cnn-segmentation pipeline
-        original_image, result_image = run_pipeline(upload_path)
+            if file.filename == "":
+                return render_template("index.html")
 
-        # Save only boundary result
-        result_filename = "result_" + file.filename
-        result_path = os.path.join(RESULT_FOLDER, result_filename)
-        cv2.imwrite(result_path, result_image)
+            upload_path = os.path.join(UPLOAD_FOLDER, file.filename)
+            file.save(upload_path)
 
-        # Overwrite uploaded image with resized version
-        cv2.imwrite(upload_path, original_image)
+            # Resize original to 256x256 for display
+            img = cv2.imread(upload_path)
+            img = cv2.resize(img, (256, 256))
+            cv2.imwrite(upload_path, img)
 
-        return render_template(
-            "index.html",
-            original=file.filename,
-            result=result_filename
-        )
+            return render_template(
+                "index.html",
+                original=file.filename
+            )
+
+        # Run model
+        elif action == "run":
+
+            filename = request.form.get("filename")
+            upload_path = os.path.join(UPLOAD_FOLDER, filename)
+
+            original_image, result_image = run_pipeline(upload_path)
+
+            result_filename = "result_" + filename
+            result_path = os.path.join(RESULT_FOLDER, result_filename)
+            cv2.imwrite(result_path, result_image)
+
+            return render_template(
+                "index.html",
+                original=filename,
+                result=result_filename
+            )
 
     return render_template("index.html")
 
