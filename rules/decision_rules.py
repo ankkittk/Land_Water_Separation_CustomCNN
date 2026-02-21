@@ -1,17 +1,35 @@
 import cv2
 import numpy as np
 
-def classify(mean_value, variance_value, all_means, T_mean=1.28, T_var=4.22):
+def classify(mean_val,
+             var_val,
+             local_var,
+             edge_density,
+             blue_dominance,
+             green_variation):
 
-    """
-    Simple deterministic rule:
-    Water → low mean + low variance
-    Land  → otherwise
-    """
+    score = 0
 
-    #T_mean = all_means
+    # Texture smoothness (water tends to be smoother)
+    if local_var < 0.02:
+        score += 2
 
-    if mean_value < T_mean and variance_value < T_var:
+    if edge_density < 0.08:
+        score += 2
+
+    # CNN response smoothness
+    if var_val < 3.0:
+        score += 1
+
+    # Blue dominance (helps blue ocean)
+    if blue_dominance > 5:
+        score += 1
+
+    # Low green variation (land usually has high green variation)
+    if green_variation < 500:
+        score += 1
+
+    if score >= 3:
         return "Water"
     else:
         return "Land"
