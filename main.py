@@ -35,7 +35,7 @@ def run_pipeline(image_path):
 
     model = CustomCNN()
 
-    mask = segment_image(gray, model)
+    mask = segment_image(gray, original_bgr, model)
 
     result = extract_boundary(original_resized, mask)
 
